@@ -18,6 +18,6 @@ func SetTimeZone() {
 	time.Local, err = time.LoadLocation(timezone)
 
 	if err != nil {
-		log.Fatal("Failed to set timezone")
+		log.Fatal("Failed to set timezone", err)
 	}
 }

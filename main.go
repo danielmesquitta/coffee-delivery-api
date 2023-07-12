@@ -7,11 +7,13 @@ import (
 )
 
 func init() {
-	config.InitDotEnv()
+	config.LoadEnv()
 
 	config.SetTimeZone()
 
 	config.ConnectToDatabase()
+
+	config.AutoMigrate()
 }
 
 func main() {
