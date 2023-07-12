@@ -8,6 +8,10 @@ import (
 
 func init() {
 	config.InitDotEnv()
+
+	config.SetTimeZone()
+
+	config.ConnectToDatabase()
 }
 
 func main() {

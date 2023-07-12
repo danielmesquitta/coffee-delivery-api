@@ -1,4 +1,5 @@
 .PHONY: default dev build tidy test docs clean
+
 # Variables
 APP_NAME=coffee-delivery-api
 
@@ -6,7 +7,7 @@ APP_NAME=coffee-delivery-api
 default: dev
 
 dev:
-	@CompileDaemon -command="$(APP_NAME)"
+	@CompileDaemon -command="./$(APP_NAME)"
 build:
 	@go build -o $(APP_NAME) main.go
 tidy:
