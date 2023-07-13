@@ -11,9 +11,7 @@ func ShowProductController(ctx *gin.Context) {
 	// Get id from query and validate
 	id := ctx.Query("id")
 	if id == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "id is required",
-		})
+		sendError(ctx, http.StatusBadRequest, "id is required")
 		return
 	}
 
@@ -21,9 +19,7 @@ func ShowProductController(ctx *gin.Context) {
 
 	// Find product
 	if err := db.First(&product, id).Error; err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{
-			"error": "product not found",
-		})
+		sendError(ctx, http.StatusNotFound, "product not found")
 		return
 	}
 

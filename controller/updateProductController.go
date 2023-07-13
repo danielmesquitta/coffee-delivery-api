@@ -1,33 +1,50 @@
 package controller
 
 import (
+	"log"
 	"net/http"
+	"time"
 
-	"github.com/danielmesquitta/coffee-delivery-api/helper"
 	"github.com/danielmesquitta/coffee-delivery-api/model"
+	"github.com/danielmesquitta/coffee-delivery-api/util"
 	"github.com/gin-gonic/gin"
+	"github.com/lib/pq"
 )
+
+type UpdateProductRequest struct {
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Price       float64        `json:"price" validate:"numeric,gte=0"`
+	Tags        pq.StringArray `json:"tags"`
+}
+
+type UpdateProductResponse struct {
+	ID          uint           `json:"id"`
+	CreatedAt   time.Time      `json:"createdAt"`
+	UpdatedAt   time.Time      `json:"updatedAt"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Price       float64        `json:"price"`
+	Image       string         `json:"image"`
+	Tags        pq.StringArray `json:"tags"`
+}
 
 func UpdateProductController(ctx *gin.Context) {
 	// Get id from query and validate
 	id := ctx.Query("id")
 	if id == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "id is required",
-		})
+		sendError(ctx, http.StatusBadRequest, "id is required")
 		return
 	}
 
-	dto := model.UpdateProductDTO{}
+	dto := UpdateProductRequest{}
 
 	ctx.BindJSON(&dto)
 
 	// Validate DTO
-	errs := helper.Validator.Validate(dto)
+	errs := util.Validator.Validate(dto)
 	if errs != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": helper.Validator.FormatErrs(errs),
-		})
+		sendError(ctx, http.StatusBadRequest, util.Validator.FormatErrs(errs))
 		return
 	}
 
@@ -35,9 +52,7 @@ func UpdateProductController(ctx *gin.Context) {
 
 	// Find product
 	if err := db.First(&product, id).Error; err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{
-			"error": "product not found",
-		})
+		sendError(ctx, http.StatusNotFound, "product not found")
 		return
 	}
 
@@ -48,9 +63,8 @@ func UpdateProductController(ctx *gin.Context) {
 
 	// Save opening
 	if err := db.Save(&product).Error; err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": "error updating product",
-		})
+		log.Println(err)
+		sendError(ctx, http.StatusInternalServerError, "error updating product")
 		return
 	}
 

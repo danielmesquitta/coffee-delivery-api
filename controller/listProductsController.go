@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/danielmesquitta/coffee-delivery-api/model"
@@ -12,9 +13,8 @@ func ListProductsController(ctx *gin.Context) {
 
 	// Find products
 	if err := db.Find(&products).Error; err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to list products",
-		})
+		log.Println(err)
+		sendError(ctx, http.StatusInternalServerError, "failed to list products")
 		return
 	}
 
