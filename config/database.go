@@ -27,5 +27,9 @@ func autoMigrate() {
 }
 
 func GetDatabase() *gorm.DB {
+	if db == nil {
+		log.Fatal("database not initialized")
+	}
+
 	return db
 }

@@ -12,12 +12,12 @@ func setTimeZone() {
 	timezone := os.Getenv("TIMEZONE")
 
 	if timezone == "" {
-		log.Fatal("Timezone not set in .env file")
+		log.Fatal("timezone not set in .env file")
 	}
 
 	time.Local, err = time.LoadLocation(timezone)
 
 	if err != nil {
-		log.Fatal("Failed to set timezone", err)
+		log.Fatal("failed to set timezone", err)
 	}
 }

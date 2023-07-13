@@ -10,6 +10,10 @@ func initializeRoutes(router *gin.Engine) {
 
 	v1 := router.Group(basePath)
 	{
-		v1.POST("/product", controller.CreateProduct)
+		v1.POST("/product", controller.CreateProductController)
+		v1.PUT("/product", controller.UpdateProductController)
+		v1.DELETE("/product", controller.DeleteProductController)
+		v1.GET("/product", controller.ShowProductController)
+		v1.GET("/products", controller.ListProductsController)
 	}
 }
