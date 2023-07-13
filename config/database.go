@@ -11,7 +11,7 @@ import (
 
 var db *gorm.DB
 
-func ConnectToDatabase() {
+func connectToDatabase() {
 	var err error
 
 	dsn := os.Getenv("DATABASE_URL")
@@ -22,7 +22,7 @@ func ConnectToDatabase() {
 	}
 }
 
-func AutoMigrate() {
+func autoMigrate() {
 	db.AutoMigrate(&model.Product{})
 }
 

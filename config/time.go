@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func SetTimeZone() {
+func setTimeZone() {
 	var err error
 
 	timezone := os.Getenv("TIMEZONE")
