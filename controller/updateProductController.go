@@ -8,27 +8,39 @@ import (
 	"github.com/danielmesquitta/coffee-delivery-api/model"
 	"github.com/danielmesquitta/coffee-delivery-api/util"
 	"github.com/gin-gonic/gin"
-	"github.com/lib/pq"
 )
 
 type UpdateProductRequest struct {
-	Name        string         `json:"name"`
-	Description string         `json:"description"`
-	Price       float64        `json:"price" validate:"numeric,gte=0"`
-	Tags        pq.StringArray `json:"tags"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Price       float64  `json:"price" validate:"numeric,gte=0"`
+	Tags        []string `json:"tags"`
 }
 
 type UpdateProductResponse struct {
-	ID          uint           `json:"id"`
-	CreatedAt   time.Time      `json:"createdAt"`
-	UpdatedAt   time.Time      `json:"updatedAt"`
-	Name        string         `json:"name"`
-	Description string         `json:"description"`
-	Price       float64        `json:"price"`
-	Image       string         `json:"image"`
-	Tags        pq.StringArray `json:"tags"`
+	ID          uint      `json:"id"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Price       float64   `json:"price"`
+	Image       string    `json:"image"`
+	Tags        []string  `json:"tags"`
 }
 
+// @BasePath /api/v1
+// @Summary Update product
+// @Description Update a product
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Param id query string true "Product Identification"
+// @Param product body UpdateProductRequest true "Product data to Update"
+// @Success 200 {object} UpdateProductResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /product [put]
 func UpdateProductController(ctx *gin.Context) {
 	// Get id from query and validate
 	id := ctx.Query("id")

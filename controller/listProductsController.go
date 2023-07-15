@@ -8,6 +8,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type ListProductsResponse struct {
+	Data []ShowProductResponse
+}
+
+// @BasePath /api/v1
+// @Summary List products
+// @Description List all products
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Success 200 {object} ListProductsResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /products [get]
 func ListProductsController(ctx *gin.Context) {
 	products := []model.Product{}
 
@@ -18,5 +31,11 @@ func ListProductsController(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, products)
+	response := struct {
+		Data []model.Product
+	}{
+		Data: products,
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }

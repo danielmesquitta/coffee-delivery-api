@@ -8,27 +8,37 @@ import (
 	"github.com/danielmesquitta/coffee-delivery-api/model"
 	"github.com/danielmesquitta/coffee-delivery-api/util"
 	"github.com/gin-gonic/gin"
-	"github.com/lib/pq"
 )
 
 type CreateProductRequest struct {
-	Name        string         `json:"name" validate:"required"`
-	Description string         `json:"description" validate:"required"`
-	Price       float64        `json:"price" validate:"required,numeric,gte=0"`
-	Tags        pq.StringArray `json:"tags"`
+	Name        string   `json:"name" validate:"required"`
+	Description string   `json:"description" validate:"required"`
+	Price       float64  `json:"price" validate:"required,numeric,gte=0"`
+	Tags        []string `json:"tags"`
 }
 
 type CreateProductResponse struct {
-	ID          uint           `json:"id"`
-	CreatedAt   time.Time      `json:"createdAt"`
-	UpdatedAt   time.Time      `json:"updatedAt"`
-	Name        string         `json:"name"`
-	Description string         `json:"description"`
-	Price       float64        `json:"price"`
-	Image       string         `json:"image"`
-	Tags        pq.StringArray `json:"tags"`
+	ID          uint      `json:"id"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Price       float64   `json:"price"`
+	Image       string    `json:"image"`
+	Tags        []string  `json:"tags"`
 }
 
+// @BasePath /api/v1
+// @Summary Create product
+// @Description Create a new product
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Param request body CreateProductRequest true "Request body"
+// @Success 201 {object} CreateProductResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /product [post]
 func CreateProductController(ctx *gin.Context) {
 	dto := CreateProductRequest{}
 

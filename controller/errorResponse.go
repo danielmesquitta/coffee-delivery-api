@@ -6,7 +6,7 @@ import (
 
 type ErrorResponse struct {
 	Message   string `json:"message"`
-	ErrorCode string `json:"errorCode"`
+	ErrorCode uint   `json:"errorCode"`
 }
 
 func sendError(ctx *gin.Context, code int, msg string) {

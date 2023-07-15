@@ -8,6 +8,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Delete product
+// @Description Delete a product
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Param id query string true "Product identification"
+// @Success 204
+// @Failure 400 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Router /product [delete]
 func DeleteProductController(ctx *gin.Context) {
 	// Get id from query and validate
 	id := ctx.Query("id")
