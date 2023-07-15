@@ -3,7 +3,6 @@ package controller
 import (
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/danielmesquitta/coffee-delivery-api/model"
 	"github.com/danielmesquitta/coffee-delivery-api/util"
@@ -35,15 +34,6 @@ type CreateAddressResponse struct {
 	State        string `json:"state"`
 }
 
-type CreateUserResponse struct {
-	ID            uint                  `json:"id"`
-	CreatedAt     time.Time             `json:"createdAt"`
-	UpdatedAt     time.Time             `json:"updatedAt"`
-	PaymentMethod model.PaymentMethod   `json:"paymentMethod"`
-	AddressID     uint                  `json:"addressId"`
-	Address       CreateAddressResponse `json:"address"`
-}
-
 // @BasePath /api/v1
 // @Summary Create user
 // @Description Create a new user
@@ -51,7 +41,7 @@ type CreateUserResponse struct {
 // @Accept json
 // @Produce json
 // @Param request body CreateUserRequest true "Request body"
-// @Success 201 {object} CreateUserResponse
+// @Success 201
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /user [post]
@@ -59,8 +49,6 @@ func CreateUserController(ctx *gin.Context) {
 	dto := CreateUserRequest{}
 
 	ctx.ShouldBindJSON(&dto)
-
-	log.Println(dto)
 
 	// Validate DTO
 	errs := util.Validator.Validate(dto)
@@ -71,7 +59,7 @@ func CreateUserController(ctx *gin.Context) {
 
 	user := model.User{
 		PaymentMethod: dto.PaymentMethod,
-		Address: model.Address{
+		Address: &model.Address{
 			ZipCode:      dto.Address.ZipCode,
 			Street:       dto.Address.Street,
 			Number:       dto.Address.Number,
@@ -89,5 +77,5 @@ func CreateUserController(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, user)
+	ctx.Writer.WriteHeader(http.StatusCreated)
 }

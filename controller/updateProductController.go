@@ -3,7 +3,6 @@ package controller
 import (
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/danielmesquitta/coffee-delivery-api/model"
 	"github.com/danielmesquitta/coffee-delivery-api/util"
@@ -17,17 +16,6 @@ type UpdateProductRequest struct {
 	Tags        []string `json:"tags"`
 }
 
-type UpdateProductResponse struct {
-	ID          uint      `json:"id"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Price       float64   `json:"price"`
-	Image       string    `json:"image"`
-	Tags        []string  `json:"tags"`
-}
-
 // @BasePath /api/v1
 // @Summary Update product
 // @Description Update a product
@@ -36,7 +24,7 @@ type UpdateProductResponse struct {
 // @Produce json
 // @Param id query string true "Product Identification"
 // @Param product body UpdateProductRequest true "Product data to Update"
-// @Success 200 {object} UpdateProductResponse
+// @Success 204
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
@@ -80,5 +68,5 @@ func UpdateProductController(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, product)
+	ctx.Writer.WriteHeader(http.StatusNoContent)
 }

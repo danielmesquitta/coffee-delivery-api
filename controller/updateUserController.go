@@ -38,15 +38,6 @@ type UpdateAddressResponse struct {
 	State        string    `json:"state"`
 }
 
-type UpdateUserResponse struct {
-	ID            uint                  `json:"id"`
-	CreatedAt     time.Time             `json:"createdAt"`
-	UpdatedAt     time.Time             `json:"updatedAt"`
-	PaymentMethod model.PaymentMethod   `json:"paymentMethod"`
-	AddressID     uint                  `json:"addressId"`
-	Address       UpdateAddressResponse `json:"address"`
-}
-
 // @BasePath /api/v1
 // @Summary Update user
 // @Description Update a user
@@ -55,7 +46,7 @@ type UpdateUserResponse struct {
 // @Produce json
 // @Param id query string true "User Identification"
 // @Param user body UpdateUserRequest true "User data to Update"
-// @Success 200 {object} UpdateUserResponse
+// @Success 204
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
@@ -88,7 +79,7 @@ func UpdateUserController(ctx *gin.Context) {
 	}
 
 	user.PaymentMethod = dto.PaymentMethod
-	user.Address = model.Address{
+	user.Address = &model.Address{
 		ZipCode:      dto.Address.ZipCode,
 		Street:       dto.Address.Street,
 		Number:       dto.Address.Number,
@@ -105,5 +96,5 @@ func UpdateUserController(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, user)
+	ctx.Writer.WriteHeader(http.StatusNoContent)
 }

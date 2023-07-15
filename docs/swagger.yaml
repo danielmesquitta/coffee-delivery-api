@@ -1,4 +1,11 @@
 definitions:
+  controller.AssociateProductRequest:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
+    type: object
   controller.CreateAddressRequest:
     properties:
       city:
@@ -24,22 +31,14 @@ definitions:
     - street
     - zipCode
     type: object
-  controller.CreateAddressResponse:
+  controller.CreateOrderRequest:
     properties:
-      city:
-        type: string
-      complement:
-        type: string
-      neighborhood:
-        type: string
-      number:
-        type: string
-      state:
-        type: string
-      street:
-        type: string
-      zipCode:
-        type: string
+      products:
+        items:
+          $ref: '#/definitions/controller.AssociateProductRequest'
+        type: array
+      userId:
+        type: integer
     type: object
   controller.CreateProductRequest:
     properties:
@@ -59,7 +58,45 @@ definitions:
     - name
     - price
     type: object
-  controller.CreateProductResponse:
+  controller.CreateUserRequest:
+    properties:
+      address:
+        $ref: '#/definitions/controller.CreateAddressRequest'
+      paymentMethod:
+        $ref: '#/definitions/model.PaymentMethod'
+    required:
+    - address
+    - paymentMethod
+    type: object
+  controller.ErrorResponse:
+    properties:
+      errorCode:
+        type: integer
+      message:
+        type: string
+    type: object
+  controller.ListOrdersResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/controller.ShowOrderResponse'
+        type: array
+    type: object
+  controller.ListProductsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/controller.ShowProductResponse'
+        type: array
+    type: object
+  controller.ListUsersResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/controller.ShowUserResponse'
+        type: array
+    type: object
+  controller.ShowOrderResponse:
     properties:
       createdAt:
         type: string
@@ -79,52 +116,6 @@ definitions:
         type: array
       updatedAt:
         type: string
-    type: object
-  controller.CreateUserRequest:
-    properties:
-      address:
-        $ref: '#/definitions/controller.CreateAddressRequest'
-      paymentMethod:
-        $ref: '#/definitions/model.PaymentMethod'
-    required:
-    - address
-    - paymentMethod
-    type: object
-  controller.CreateUserResponse:
-    properties:
-      address:
-        $ref: '#/definitions/controller.CreateAddressResponse'
-      addressId:
-        type: integer
-      createdAt:
-        type: string
-      id:
-        type: integer
-      paymentMethod:
-        $ref: '#/definitions/model.PaymentMethod'
-      updatedAt:
-        type: string
-    type: object
-  controller.ErrorResponse:
-    properties:
-      errorCode:
-        type: integer
-      message:
-        type: string
-    type: object
-  controller.ListProductsResponse:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/controller.ShowProductResponse'
-        type: array
-    type: object
-  controller.ListUsersResponse:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/controller.ShowUserResponse'
-        type: array
     type: object
   controller.ShowProductResponse:
     properties:
@@ -193,29 +184,6 @@ definitions:
     - street
     - zipCode
     type: object
-  controller.UpdateAddressResponse:
-    properties:
-      city:
-        type: string
-      complement:
-        type: string
-      createdAt:
-        type: string
-      id:
-        type: integer
-      neighborhood:
-        type: string
-      number:
-        type: string
-      state:
-        type: string
-      street:
-        type: string
-      updatedAt:
-        type: string
-      zipCode:
-        type: string
-    type: object
   controller.UpdateProductRequest:
     properties:
       description:
@@ -230,27 +198,6 @@ definitions:
           type: string
         type: array
     type: object
-  controller.UpdateProductResponse:
-    properties:
-      createdAt:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      image:
-        type: string
-      name:
-        type: string
-      price:
-        type: number
-      tags:
-        items:
-          type: string
-        type: array
-      updatedAt:
-        type: string
-    type: object
   controller.UpdateUserRequest:
     properties:
       address:
@@ -260,21 +207,6 @@ definitions:
     required:
     - address
     - paymentMethod
-    type: object
-  controller.UpdateUserResponse:
-    properties:
-      address:
-        $ref: '#/definitions/controller.UpdateAddressResponse'
-      addressId:
-        type: integer
-      createdAt:
-        type: string
-      id:
-        type: integer
-      paymentMethod:
-        $ref: '#/definitions/model.PaymentMethod'
-      updatedAt:
-        type: string
     type: object
   model.PaymentMethod:
     enum:
@@ -289,6 +221,81 @@ definitions:
 info:
   contact: {}
 paths:
+  /order:
+    get:
+      consumes:
+      - application/json
+      description: Show an order
+      parameters:
+      - description: Order identification
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ShowOrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Show order
+      tags:
+      - Orders
+    post:
+      consumes:
+      - application/json
+      description: Create a new order
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Create order
+      tags:
+      - Orders
+  /orders:
+    get:
+      consumes:
+      - application/json
+      description: List all orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ListOrdersResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: List orders
+      tags:
+      - Orders
   /product:
     delete:
       consumes:
@@ -358,10 +365,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controller.CreateProductResponse'
+        "201":
+          description: Created
         "400":
           description: Bad Request
           schema:
@@ -392,10 +397,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controller.UpdateProductResponse'
+        "204":
+          description: No Content
         "400":
           description: Bad Request
           schema:
@@ -499,10 +502,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controller.CreateUserResponse'
+        "201":
+          description: Created
         "400":
           description: Bad Request
           schema:
@@ -533,10 +534,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controller.UpdateUserResponse'
+        "204":
+          description: No Content
         "400":
           description: Bad Request
           schema:

@@ -30,6 +30,12 @@ func initializeRoutes(router *gin.Engine) {
 		v1.GET("/user", controller.ShowUserController)
 		v1.GET("/users", controller.ListUsersController)
 	}
+	{
+		// Orders
+		v1.POST("/order", controller.CreateOrderController)
+		v1.GET("/order", controller.ShowOrderController)
+		v1.GET("/orders", controller.ListOrdersController)
+	}
 
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }

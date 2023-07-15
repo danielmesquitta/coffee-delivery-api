@@ -41,7 +41,9 @@ func ShowUserController(ctx *gin.Context) {
 	user := model.User{}
 
 	// Find user
-	if err := db.First(&user, id).Error; err != nil {
+
+	// Join user address
+	if err := db.Joins("Address").First(&user, id).Error; err != nil {
 		sendError(ctx, http.StatusNotFound, "user not found")
 		return
 	}

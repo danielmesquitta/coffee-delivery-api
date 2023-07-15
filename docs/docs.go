@@ -16,6 +16,120 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/order": {
+            "get": {
+                "description": "Show an order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Show order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order identification",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ShowOrderResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Create order",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.CreateOrderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "get": {
+                "description": "List all orders",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "List orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ListOrdersResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/product": {
             "get": {
                 "description": "Show a job product",
@@ -90,11 +204,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controller.UpdateProductResponse"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -140,11 +251,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controller.CreateProductResponse"
-                        }
+                    "201": {
+                        "description": "Created"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -303,11 +411,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controller.UpdateUserResponse"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -353,11 +458,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controller.CreateUserResponse"
-                        }
+                    "201": {
+                        "description": "Created"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -444,6 +546,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controller.AssociateProductRequest": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "controller.CreateAddressRequest": {
             "type": "object",
             "required": [
@@ -479,29 +592,17 @@ const docTemplate = `{
                 }
             }
         },
-        "controller.CreateAddressResponse": {
+        "controller.CreateOrderRequest": {
             "type": "object",
             "properties": {
-                "city": {
-                    "type": "string"
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controller.AssociateProductRequest"
+                    }
                 },
-                "complement": {
-                    "type": "string"
-                },
-                "neighborhood": {
-                    "type": "string"
-                },
-                "number": {
-                    "type": "string"
-                },
-                "state": {
-                    "type": "string"
-                },
-                "street": {
-                    "type": "string"
-                },
-                "zipCode": {
-                    "type": "string"
+                "userId": {
+                    "type": "integer"
                 }
             }
         },
@@ -531,7 +632,66 @@ const docTemplate = `{
                 }
             }
         },
-        "controller.CreateProductResponse": {
+        "controller.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "address",
+                "paymentMethod"
+            ],
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/controller.CreateAddressRequest"
+                },
+                "paymentMethod": {
+                    "$ref": "#/definitions/model.PaymentMethod"
+                }
+            }
+        },
+        "controller.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "errorCode": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.ListOrdersResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controller.ShowOrderResponse"
+                    }
+                }
+            }
+        },
+        "controller.ListProductsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controller.ShowProductResponse"
+                    }
+                }
+            }
+        },
+        "controller.ListUsersResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controller.ShowUserResponse"
+                    }
+                }
+            }
+        },
+        "controller.ShowOrderResponse": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -560,77 +720,6 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
-                }
-            }
-        },
-        "controller.CreateUserRequest": {
-            "type": "object",
-            "required": [
-                "address",
-                "paymentMethod"
-            ],
-            "properties": {
-                "address": {
-                    "$ref": "#/definitions/controller.CreateAddressRequest"
-                },
-                "paymentMethod": {
-                    "$ref": "#/definitions/model.PaymentMethod"
-                }
-            }
-        },
-        "controller.CreateUserResponse": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "$ref": "#/definitions/controller.CreateAddressResponse"
-                },
-                "addressId": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "paymentMethod": {
-                    "$ref": "#/definitions/model.PaymentMethod"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "controller.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "errorCode": {
-                    "type": "integer"
-                },
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "controller.ListProductsResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/controller.ShowProductResponse"
-                    }
-                }
-            }
-        },
-        "controller.ListUsersResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/controller.ShowUserResponse"
-                    }
                 }
             }
         },
@@ -733,41 +822,6 @@ const docTemplate = `{
                 }
             }
         },
-        "controller.UpdateAddressResponse": {
-            "type": "object",
-            "properties": {
-                "city": {
-                    "type": "string"
-                },
-                "complement": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "neighborhood": {
-                    "type": "string"
-                },
-                "number": {
-                    "type": "string"
-                },
-                "state": {
-                    "type": "string"
-                },
-                "street": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "zipCode": {
-                    "type": "string"
-                }
-            }
-        },
         "controller.UpdateProductRequest": {
             "type": "object",
             "properties": {
@@ -789,38 +843,6 @@ const docTemplate = `{
                 }
             }
         },
-        "controller.UpdateProductResponse": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "image": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
         "controller.UpdateUserRequest": {
             "type": "object",
             "required": [
@@ -833,29 +855,6 @@ const docTemplate = `{
                 },
                 "paymentMethod": {
                     "$ref": "#/definitions/model.PaymentMethod"
-                }
-            }
-        },
-        "controller.UpdateUserResponse": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "$ref": "#/definitions/controller.UpdateAddressResponse"
-                },
-                "addressId": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "paymentMethod": {
-                    "$ref": "#/definitions/model.PaymentMethod"
-                },
-                "updatedAt": {
-                    "type": "string"
                 }
             }
         },

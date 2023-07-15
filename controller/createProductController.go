@@ -3,7 +3,6 @@ package controller
 import (
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/danielmesquitta/coffee-delivery-api/model"
 	"github.com/danielmesquitta/coffee-delivery-api/util"
@@ -17,17 +16,6 @@ type CreateProductRequest struct {
 	Tags        []string `json:"tags"`
 }
 
-type CreateProductResponse struct {
-	ID          uint      `json:"id"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Price       float64   `json:"price"`
-	Image       string    `json:"image"`
-	Tags        []string  `json:"tags"`
-}
-
 // @BasePath /api/v1
 // @Summary Create product
 // @Description Create a new product
@@ -35,7 +23,7 @@ type CreateProductResponse struct {
 // @Accept json
 // @Produce json
 // @Param request body CreateProductRequest true "Request body"
-// @Success 201 {object} CreateProductResponse
+// @Success 201
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /product [post]
@@ -65,5 +53,5 @@ func CreateProductController(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, product)
+	ctx.Writer.WriteHeader(http.StatusCreated)
 }

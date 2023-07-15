@@ -15,11 +15,11 @@ const (
 )
 
 type User struct {
-	ID            uint           `json:"id" gorm:"primarykey"`
-	CreatedAt     time.Time      `json:"createdAt"`
-	UpdatedAt     time.Time      `json:"updatedAt"`
+	ID            uint           `json:"id,omitempty" gorm:"primarykey"`
+	CreatedAt     time.Time      `json:"createdAt,omitempty"`
+	UpdatedAt     time.Time      `json:"updatedAt,omitempty"`
 	DeletedAt     gorm.DeletedAt `json:"deletedAt,omitempty" gorm:"index"`
-	PaymentMethod PaymentMethod  `json:"paymentMethod" sql:"type:ENUM('DEBIT_CARD', 'CREDIT_CARD', 'CASH')"`
-	AddressID     uint           `json:"addressId"`
-	Address       Address        `json:"address" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	PaymentMethod PaymentMethod  `json:"paymentMethod,omitempty" sql:"type:ENUM('DEBIT_CARD', 'CREDIT_CARD', 'CASH')"`
+	AddressID     uint           `json:"addressId,omitempty"`
+	Address       *Address       `json:"address,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
