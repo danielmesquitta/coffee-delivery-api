@@ -12,7 +12,7 @@ type Product struct {
 	ID          uint           `json:"id" gorm:"primarykey"`
 	CreatedAt   time.Time      `json:"createdAt"`
 	UpdatedAt   time.Time      `json:"updatedAt"`
-	DeletedAt   gorm.DeletedAt `json:"deletedAt" gorm:"index"`
+	DeletedAt   gorm.DeletedAt `json:"deletedAt,omitempty" gorm:"index"`
 	Name        string         `json:"name"`
 	Description string         `json:"description"`
 	Price       float64        `json:"price"`

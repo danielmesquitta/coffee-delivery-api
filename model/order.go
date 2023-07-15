@@ -10,8 +10,8 @@ type Order struct {
 	ID        uint           `json:"id" gorm:"primarykey"`
 	CreatedAt time.Time      `json:"createdAt"`
 	UpdatedAt time.Time      `json:"updatedAt"`
-	DeletedAt gorm.DeletedAt `json:"deletedAt" gorm:"index"`
+	DeletedAt gorm.DeletedAt `json:"deletedAt,omitempty" gorm:"index"`
 	Products  []Product      `json:"products" gorm:"many2many:order_products;"`
 	UserID    uint           `json:"userId"`
-	User      User           `json:"user"`
+	User      User           `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }

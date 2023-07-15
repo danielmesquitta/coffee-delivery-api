@@ -23,7 +23,7 @@ func connectToDatabase() {
 }
 
 func autoMigrate() {
-	db.AutoMigrate(&model.Product{})
+	db.AutoMigrate(&model.Product{}, &model.Address{}, &model.User{}, &model.Order{})
 }
 
 func GetDatabase() *gorm.DB {

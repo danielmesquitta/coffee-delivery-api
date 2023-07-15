@@ -10,7 +10,7 @@ type Address struct {
 	ID           uint           `json:"id" gorm:"primarykey"`
 	CreatedAt    time.Time      `json:"createdAt"`
 	UpdatedAt    time.Time      `json:"updatedAt"`
-	DeletedAt    gorm.DeletedAt `json:"deletedAt" gorm:"index"`
+	DeletedAt    gorm.DeletedAt `json:"deletedAt,omitempty" gorm:"index"`
 	ZipCode      string         `json:"zipCode"`
 	Street       string         `json:"street"`
 	Number       string         `json:"number"`
