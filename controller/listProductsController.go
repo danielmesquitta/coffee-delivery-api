@@ -9,7 +9,7 @@ import (
 )
 
 type ListProductsResponse struct {
-	Data []ShowProductResponse
+	Data []ShowProductResponse `json:"data"`
 }
 
 // @BasePath /api/v1
