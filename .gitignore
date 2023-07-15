@@ -1,8 +1,4 @@
-# Environment variables
 .env
-
-# Lock files
 go.sum
-
-# Binaries for programs and plugins
 coffee-delivery-api
+tmp/
