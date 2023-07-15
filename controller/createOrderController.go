@@ -29,15 +29,15 @@ type CreateOrderRequest struct {
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /order [post]
-func CreateOrderController(ctx *gin.Context) {
+func CreateOrderController(c *gin.Context) {
 	dto := CreateOrderRequest{}
 
-	ctx.ShouldBindJSON(&dto)
+	c.ShouldBindJSON(&dto)
 
 	// Validate DTO
 	errs := util.Validator.Validate(dto)
 	if errs != nil {
-		sendError(ctx, http.StatusBadRequest, util.Validator.FormatErrs(errs))
+		sendError(c, http.StatusBadRequest, util.Validator.FormatErrs(errs))
 		return
 	}
 
@@ -55,9 +55,9 @@ func CreateOrderController(ctx *gin.Context) {
 	// Create order
 	if err := db.Create(&order).Error; err != nil {
 		log.Println(err)
-		sendError(ctx, http.StatusInternalServerError, "failed to create order")
+		sendError(c, http.StatusInternalServerError, "failed to create order")
 		return
 	}
 
-	ctx.Writer.WriteHeader(http.StatusCreated)
+	c.Writer.WriteHeader(http.StatusCreated)
 }
