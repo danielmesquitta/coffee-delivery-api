@@ -30,11 +30,11 @@ type ShowOrderResponse struct {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /order [get]
-func ShowOrderController(ctx *gin.Context) {
+func ShowOrderController(c *gin.Context) {
 	// Get id from query and validate
-	id := ctx.Query("id")
+	id := c.Query("id")
 	if id == "" {
-		sendError(ctx, http.StatusBadRequest, "id is required")
+		sendError(c, http.StatusBadRequest, "id is required")
 		return
 	}
 
@@ -42,7 +42,7 @@ func ShowOrderController(ctx *gin.Context) {
 
 	// Find order
 	if err := db.Joins("User").First(&order, id).Error; err != nil {
-		sendError(ctx, http.StatusNotFound, "order not found")
+		sendError(c, http.StatusNotFound, "order not found")
 		return
 	}
 
@@ -51,7 +51,7 @@ func ShowOrderController(ctx *gin.Context) {
 	// Find order products
 	err := db.Model(&order).Association("Products").Find(&products)
 	if err != nil {
-		sendError(ctx, http.StatusNotFound, "failed to associate products to order")
+		sendError(c, http.StatusNotFound, "failed to associate products to order")
 		return
 	}
 
@@ -60,5 +60,5 @@ func ShowOrderController(ctx *gin.Context) {
 		order.Products = append(order.Products, &product)
 	}
 
-	ctx.JSON(http.StatusOK, order)
+	c.JSON(http.StatusOK, order)
 }

@@ -27,15 +27,15 @@ type CreateProductRequest struct {
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /product [post]
-func CreateProductController(ctx *gin.Context) {
+func CreateProductController(c *gin.Context) {
 	dto := CreateProductRequest{}
 
-	ctx.ShouldBindJSON(&dto)
+	c.ShouldBindJSON(&dto)
 
 	// Validate DTO
 	errs := util.Validator.Validate(dto)
 	if errs != nil {
-		sendError(ctx, http.StatusBadRequest, util.Validator.FormatErrs(errs))
+		sendError(c, http.StatusBadRequest, util.Validator.FormatErrs(errs))
 		return
 	}
 
@@ -49,9 +49,9 @@ func CreateProductController(ctx *gin.Context) {
 	// Create product
 	if err := db.Create(&product).Error; err != nil {
 		log.Println(err)
-		sendError(ctx, http.StatusInternalServerError, "failed to create product")
+		sendError(c, http.StatusInternalServerError, "failed to create product")
 		return
 	}
 
-	ctx.Writer.WriteHeader(http.StatusCreated)
+	c.Writer.WriteHeader(http.StatusCreated)
 }

@@ -30,11 +30,11 @@ type ShowUserResponse struct {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /user [get]
-func ShowUserController(ctx *gin.Context) {
+func ShowUserController(c *gin.Context) {
 	// Get id from query and validate
-	id := ctx.Query("id")
+	id := c.Query("id")
 	if id == "" {
-		sendError(ctx, http.StatusBadRequest, "id is required")
+		sendError(c, http.StatusBadRequest, "id is required")
 		return
 	}
 
@@ -44,9 +44,9 @@ func ShowUserController(ctx *gin.Context) {
 
 	// Join user address
 	if err := db.Joins("Address").First(&user, id).Error; err != nil {
-		sendError(ctx, http.StatusNotFound, "user not found")
+		sendError(c, http.StatusNotFound, "user not found")
 		return
 	}
 
-	ctx.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, user)
 }

@@ -9,13 +9,9 @@ type ErrorResponse struct {
 	ErrorCode uint   `json:"errorCode"`
 }
 
-type ListResponse struct {
-	Data interface{} `json:"data"`
-}
-
-func sendError(ctx *gin.Context, code int, msg string) {
-	ctx.Header("Content-type", "application/json")
-	ctx.JSON(code, gin.H{
+func sendError(c *gin.Context, code int, msg string) {
+	c.Header("Content-type", "application/json")
+	c.JSON(code, gin.H{
 		"message":   msg,
 		"errorCode": code,
 	})

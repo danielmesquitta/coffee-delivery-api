@@ -9,6 +9,7 @@ import (
 )
 
 type ListOrdersResponse struct {
+	PaginatedResponse
 	Data []ShowOrderResponse `json:"data"`
 }
 
@@ -21,19 +22,19 @@ type ListOrdersResponse struct {
 // @Success 200 {object} ListOrdersResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /orders [get]
-func ListOrdersController(ctx *gin.Context) {
+func ListOrdersController(c *gin.Context) {
 	orders := []model.Order{}
 
+	response := NewPaginatedResponse(c)
+
 	// Find orders
-	if err := db.Find(&orders).Error; err != nil {
+	if err := db.Scopes(Paginate(orders, &response)).Find(&orders).Error; err != nil {
 		log.Println(err)
-		sendError(ctx, http.StatusInternalServerError, "failed to list orders")
+		sendError(c, http.StatusInternalServerError, "failed to list orders")
 		return
 	}
 
-	response := ListResponse{
-		Data: orders,
-	}
+	response.Data = orders
 
-	ctx.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, response)
 }

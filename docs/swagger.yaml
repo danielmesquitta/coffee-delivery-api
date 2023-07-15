@@ -81,6 +81,16 @@ definitions:
         items:
           $ref: '#/definitions/controller.ShowOrderResponse'
         type: array
+      limit:
+        type: integer
+      page:
+        type: integer
+      sort:
+        type: string
+      totalPages:
+        type: integer
+      totalRows:
+        type: integer
     type: object
   controller.ListProductsResponse:
     properties:
@@ -88,6 +98,16 @@ definitions:
         items:
           $ref: '#/definitions/controller.ShowProductResponse'
         type: array
+      limit:
+        type: integer
+      page:
+        type: integer
+      sort:
+        type: string
+      totalPages:
+        type: integer
+      totalRows:
+        type: integer
     type: object
   controller.ListUsersResponse:
     properties:
@@ -95,6 +115,16 @@ definitions:
         items:
           $ref: '#/definitions/controller.ShowUserResponse'
         type: array
+      limit:
+        type: integer
+      page:
+        type: integer
+      sort:
+        type: string
+      totalPages:
+        type: integer
+      totalRows:
+        type: integer
     type: object
   controller.ShowOrderResponse:
     properties:

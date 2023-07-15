@@ -29,22 +29,22 @@ type UpdateProductRequest struct {
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /product [put]
-func UpdateProductController(ctx *gin.Context) {
+func UpdateProductController(c *gin.Context) {
 	// Get id from query and validate
-	id := ctx.Query("id")
+	id := c.Query("id")
 	if id == "" {
-		sendError(ctx, http.StatusBadRequest, "id is required")
+		sendError(c, http.StatusBadRequest, "id is required")
 		return
 	}
 
 	dto := UpdateProductRequest{}
 
-	ctx.BindJSON(&dto)
+	c.BindJSON(&dto)
 
 	// Validate DTO
 	errs := util.Validator.Validate(dto)
 	if errs != nil {
-		sendError(ctx, http.StatusBadRequest, util.Validator.FormatErrs(errs))
+		sendError(c, http.StatusBadRequest, util.Validator.FormatErrs(errs))
 		return
 	}
 
@@ -52,7 +52,7 @@ func UpdateProductController(ctx *gin.Context) {
 
 	// Find product
 	if err := db.First(&product, id).Error; err != nil {
-		sendError(ctx, http.StatusNotFound, "product not found")
+		sendError(c, http.StatusNotFound, "product not found")
 		return
 	}
 
@@ -64,9 +64,9 @@ func UpdateProductController(ctx *gin.Context) {
 	// Save opening
 	if err := db.Save(&product).Error; err != nil {
 		log.Println(err)
-		sendError(ctx, http.StatusInternalServerError, "error updating product")
+		sendError(c, http.StatusInternalServerError, "error updating product")
 		return
 	}
 
-	ctx.Writer.WriteHeader(http.StatusNoContent)
+	c.Writer.WriteHeader(http.StatusNoContent)
 }

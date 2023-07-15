@@ -30,11 +30,11 @@ type ShowProductResponse struct {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /product [get]
-func ShowProductController(ctx *gin.Context) {
+func ShowProductController(c *gin.Context) {
 	// Get id from query and validate
-	id := ctx.Query("id")
+	id := c.Query("id")
 	if id == "" {
-		sendError(ctx, http.StatusBadRequest, "id is required")
+		sendError(c, http.StatusBadRequest, "id is required")
 		return
 	}
 
@@ -42,9 +42,9 @@ func ShowProductController(ctx *gin.Context) {
 
 	// Find product
 	if err := db.First(&product, id).Error; err != nil {
-		sendError(ctx, http.StatusNotFound, "product not found")
+		sendError(c, http.StatusNotFound, "product not found")
 		return
 	}
 
-	ctx.JSON(http.StatusOK, product)
+	c.JSON(http.StatusOK, product)
 }

@@ -45,15 +45,15 @@ type CreateAddressResponse struct {
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /user [post]
-func CreateUserController(ctx *gin.Context) {
+func CreateUserController(c *gin.Context) {
 	dto := CreateUserRequest{}
 
-	ctx.ShouldBindJSON(&dto)
+	c.ShouldBindJSON(&dto)
 
 	// Validate DTO
 	errs := util.Validator.Validate(dto)
 	if errs != nil {
-		sendError(ctx, http.StatusBadRequest, util.Validator.FormatErrs(errs))
+		sendError(c, http.StatusBadRequest, util.Validator.FormatErrs(errs))
 		return
 	}
 
@@ -73,9 +73,9 @@ func CreateUserController(ctx *gin.Context) {
 	// Create user
 	if err := db.Create(&user).Error; err != nil {
 		log.Println(err)
-		sendError(ctx, http.StatusInternalServerError, "failed to create user")
+		sendError(c, http.StatusInternalServerError, "failed to create user")
 		return
 	}
 
-	ctx.Writer.WriteHeader(http.StatusCreated)
+	c.Writer.WriteHeader(http.StatusCreated)
 }
