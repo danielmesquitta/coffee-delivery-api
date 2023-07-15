@@ -29,9 +29,20 @@ func DeleteUserController(ctx *gin.Context) {
 	user := model.User{}
 
 	// Find user
-	if err := db.Where("id = ?", id).First(&user).Error; err != nil {
+	if err := db.First(&user, id).Error; err != nil {
 		log.Println(err.Error())
 		sendError(ctx, http.StatusNotFound, "user not found")
+		return
+	}
+
+	address := model.Address{
+		ID: user.AddressID,
+	}
+
+	// Delete user address
+	if err := db.Delete(&address).Error; err != nil {
+		log.Println(err.Error())
+		sendError(ctx, http.StatusInternalServerError, "failed to delete user address")
 		return
 	}
 
