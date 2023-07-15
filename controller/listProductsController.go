@@ -31,9 +31,7 @@ func ListProductsController(ctx *gin.Context) {
 		return
 	}
 
-	response := struct {
-		Data []model.Product
-	}{
+	response := ListResponse{
 		Data: products,
 	}
 

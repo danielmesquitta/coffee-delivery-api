@@ -31,9 +31,7 @@ func ListUsersController(ctx *gin.Context) {
 		return
 	}
 
-	response := struct {
-		Data []model.User
-	}{
+	response := ListResponse{
 		Data: users,
 	}
 
